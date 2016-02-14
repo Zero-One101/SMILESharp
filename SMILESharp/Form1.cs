@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SMILESharp
@@ -32,10 +25,13 @@ namespace SMILESharp
             {
                 Close();
             }
+        }
 
+        private void btnTest_Click(object sender, EventArgs e)
+        {
             var graphicsData = rom.GetGraphicsData();
             var buffer = new Bitmap(256, 256, PixelFormat.Format4bppIndexed);
-            buffer.Palette.Entries[0] = Color.Black;
+            buffer.Palette.Entries[0] = Color.FromArgb(255, 0, 0, 0);
             buffer.Palette.Entries[1] = Color.White;
             buffer.Palette.Entries[2] = Color.Red;
             buffer.Palette.Entries[3] = Color.Green;
@@ -52,8 +48,8 @@ namespace SMILESharp
             buffer.Palette.Entries[14] = Color.Purple;
             buffer.Palette.Entries[15] = Color.Aqua;
 
-            var boundsRect = new Rectangle(pbxCanvas.Location.X, pbxCanvas.Location.Y, 256, 256);
-            var bmpData = buffer.LockBits(boundsRect, ImageLockMode.ReadWrite, buffer.PixelFormat);
+            var boundsRect = new Rectangle(pbxCanvas.Location.X, pbxCanvas.Location.Y, 128, 128);
+            var bmpData = buffer.LockBits(boundsRect, ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
 
             var ptr = bmpData.Scan0;
             Marshal.Copy(graphicsData, 0, ptr, graphicsData.Length);
