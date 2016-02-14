@@ -11,6 +11,8 @@ namespace SMILESharp
     class SMRom
     {
         public int HeaderSize { get; private set; }
+        private const int pauseTilesOffset = 0x1B0000;
+        private const int pauseTilesLength = 0x80;
         private byte[] romData;
 
         /// <summary>
@@ -59,6 +61,14 @@ namespace SMILESharp
                 return true;
             }
             return false;
+        }
+
+        public byte[] GetGraphicsData()
+        {
+            var graphicsData = new byte[pauseTilesLength];
+            Buffer.BlockCopy(romData, pauseTilesOffset, graphicsData, 0, pauseTilesLength);
+            return graphicsData;
+
         }
     }
 }
