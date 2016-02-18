@@ -4,11 +4,12 @@ using System.Windows.Forms;
 
 namespace SMILESharp
 {
-    class SMRom
+    internal class SMRom
     {
         public int HeaderSize { get; private set; }
-        private const int pauseTilesOffset = 0x1B0000;
-        private const int pauseTilesLength = 0x80;
+        private const int bytesPerTile = 32;
+        private const int pauseTilesOffset = 0x1B0040;
+        private const int pauseTilesLength = 1 * bytesPerTile;
         private byte[] romData;
 
         /// <summary>
@@ -18,7 +19,7 @@ namespace SMILESharp
         {
             if (!LoadROM())
             {
-                throw new BadRomException("Failed to load ROM");
+                throw new BadRomException("Failed to load ROM.");
             }
 
             GetHeaderSize();
@@ -30,7 +31,7 @@ namespace SMILESharp
 
             if (HeaderSize != 0 && HeaderSize != 512)
             {
-                throw new BadRomException("ROM is an incorrect length.");
+                throw new BadRomException("File size indicates an invalid ROM.");
             }
         }
 
@@ -47,24 +48,34 @@ namespace SMILESharp
                 FileName = "Super Metroid"
             };
 
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            try
             {
-                using (var fStream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    var binReader = new BinaryReader(fStream);
-                    romData = binReader.ReadBytes((int) fStream.Length);
+                    using (var fStream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        var binReader = new BinaryReader(fStream);
+                        romData = binReader.ReadBytes((int) fStream.Length);
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
         }
 
         public byte[] GetGraphicsData()
         {
+            var tempGraphicsData = new byte[pauseTilesLength];
+            Buffer.BlockCopy(romData, pauseTilesOffset, tempGraphicsData, 0, pauseTilesLength);
+
             var graphicsData = new byte[pauseTilesLength];
             Buffer.BlockCopy(romData, pauseTilesOffset, graphicsData, 0, pauseTilesLength);
-            return graphicsData;
 
+            return graphicsData;
         }
     }
 }

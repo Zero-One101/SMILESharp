@@ -35,6 +35,7 @@
             // 
             // pbxCanvas
             // 
+            this.pbxCanvas.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pbxCanvas.Location = new System.Drawing.Point(12, 42);
             this.pbxCanvas.Name = "pbxCanvas";
             this.pbxCanvas.Size = new System.Drawing.Size(1160, 1107);

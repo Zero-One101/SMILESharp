@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using SMILESharp.Properties;
 
 namespace SMILESharp
 {
@@ -21,8 +22,9 @@ namespace SMILESharp
             {
                 rom = new SMRom();
             }
-            catch (BadRomException)
+            catch (BadRomException ex)
             {
+                MessageBox.Show(ex.Message, Resources.String_Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
@@ -50,7 +52,7 @@ namespace SMILESharp
             palette.Entries[15] = Color.Aqua;
             buffer.Palette = palette;
 
-            var boundsRect = new Rectangle(0, 0, 256, 256);
+            var boundsRect = new Rectangle(0, 0, 8, 8);
             var bmpData = buffer.LockBits(boundsRect, ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
 
             var ptr = bmpData.Scan0;
